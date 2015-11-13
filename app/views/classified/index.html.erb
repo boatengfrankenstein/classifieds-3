@@ -1,0 +1,106 @@
+<style type="text/css">
+h1{
+	color: #0589B5;
+	height: 40px;
+	width: auto;
+  text-align: center;
+	padding: 10px 10px 10px 10px;
+}
+#filters{
+  background-color: #0589B5;
+  border-radius: 5px 5px 5px 5px;
+  color: white;
+  padding: 5px 5px 5px 5px;
+
+}
+#filter_table{
+  border-width: 30px;
+  margin-left: 20%;
+  margin-right: 20%;
+
+}
+#make{
+  width:100px;
+}
+</style>
+<h1>Cars Classifieds</h1>
+<%= form_for :classified, :url => '/get-filtered', :method => :get do |f| %>
+
+<div id="filters">
+<table id="filter_table">
+	<tr>
+		<td><label><b>Company</b></label></td>
+		<td><label><b>Year greater than</b></label></td>
+		<td><label><b>Price Range</b></label></td>
+	</tr>
+	<tr>
+		<td><%= f.text_field :make, :id => "make"%></td>
+		<td><%= f.text_field :year %></td>
+		<td><select onchange=submitform(value)>
+              <option value="0"></option>
+              <option value="1"> less than 5 lakhs </option>
+              <option value="2"> 5 - 10 lakhs </option>
+              <option value="3"> 10 - 20 lakhs </option>
+              <option value="4"> 20 lakhs - 1 crore </option>
+              <option value="5"> more than 1 crore </option>
+            </select>
+		</td>
+		<td>
+			<%= f.submit "Search", :onclick => "set_values()"%>	
+		</td>
+	</tr>
+</table>
+</div>
+<br/>
+
+<input type="hidden" hidden="true" id="price_range" name="price_range"></input>
+
+
+<% end %>
+<% if @cars.present? %>
+<table class="list">
+	<tr>
+		<th width="300">Car</th>
+		<th width="300">Car Make</th>
+		<th width="300">Model</th>
+		<th width="300">Year</th>
+		<th width="300">Price</th>
+	</tr>
+
+<% @cars.each do |car| %>
+   <tr>
+  	<td align="center"><%= image_tag car.image, :height => "200", :width => "300"%></td>
+    <td align="center"><%= car.make %></td>
+    <td align="center"><%= car.car_model %></td>
+    <td align="center"><%= car.year %></td>
+    <td align="center"><%= car.price %></td>
+  </tr>
+<% end %>
+</table>
+<% else %>
+ <div align="center">No cars found</div>
+<% end %>
+<script type="text/javascript">
+  var range; 
+  function submitform(val)
+  {
+     range = val;
+  }
+  function set_values()
+  {
+  	$("#price_range").val(range);
+  }
+
+  $(document).ready(function () {
+
+    $("#make").tokenInput("/make-filter", {
+        prePopulate : null,
+        propertyToSearch : "make",
+        tokenValue: 'make'
+    });
+    
+  });
+
+
+
+</script>
